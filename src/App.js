@@ -2,25 +2,23 @@ import { useState } from "react";
 import "./App.css";
 import React from "react";
 import uuid from "react-uuid";
+import TodoList from "./component/TodoList";
 
-function id() {
-	return uuid();
-}
 const initProds = [
 	{
-		id: id(),
+		id: uuid(),
 		name: "prod1",
 		isEdit: false,
 		status: false,
 	},
 	{
-		id: id(),
+		id: uuid(),
 		name: "prod2",
 		isEdit: false,
 		status: false,
 	},
 	{
-		id: id(),
+		id: uuid(),
 		name: "prod3",
 		isEdit: false,
 		status: false,
@@ -29,52 +27,11 @@ const initProds = [
 function App() {
 	const [value, setValue] = useState("");
 	const [notes, setNotes] = useState(initProds);
-	// const [checked, setChecked] = useState(true);
-
-	function startEdit(id) {
-		setNotes(
-			notes.map((note) => {
-				if (note.id === id) {
-					return { ...note, isEdit: true };
-				} else {
-					return note;
-				}
-			})
-		);
-	}
-
-	function changeNote(id, event) {
-		setNotes(
-			notes.map((note) => {
-				if (note.id === id) {
-					return { ...note, name: event.target.value };
-				} else {
-					return note;
-				}
-			})
-		);
-	}
-
-	function endEdit(id) {
-		setNotes(
-			notes.map((note) => {
-				if (note.id === id) {
-					return { ...note, isEdit: false };
-				} else {
-					return note;
-				}
-			})
-		);
-	}
-
-	function remItem(id) {
-		setNotes(notes.filter((note) => note.id !== id));
-	}
 
 	function addItem() {
 		if (value.trim()) {
 			let obj = {
-				id: id(),
+				id: uuid(),
 				name: value,
 				isEdit: false,
 				status: false,
@@ -83,11 +40,11 @@ function App() {
 		}
 	}
 
-	function handleChange(id) {
+	function changeNote(id, event) {
 		setNotes(
 			notes.map((note) => {
 				if (note.id === id) {
-					return { ...note, status: !note.status };
+					return { ...note, name: event.target.value };
 				} else {
 					return note;
 				}
@@ -109,25 +66,12 @@ function App() {
 			);
 		}
 		return (
-			// 1 componetnt
-			<li key={note.id} className={note.status ? "complete" : ""}>
-				<input
-					type="checkbox"
-					checked={note.status}
-					onChange={() => handleChange(note.id)}
-				/>
-				{elem}
-				<button
-					onClick={
-						note.isEdit
-							? () => endEdit(note.id)
-							: () => startEdit(note.id)
-					}
-				>
-					{note.isEdit ? "save" : "edit"}
-				</button>
-				<button onClick={() => remItem(note.id)}>delete</button>
-			</li>
+			<TodoList
+				setNotes={setNotes}
+				notes={notes}
+				note={note}
+				elem={elem}
+			/>
 		);
 	});
 
